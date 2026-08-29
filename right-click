@@ -1,1 +1,10 @@
+:: Restore the classic (Windows 10) right-click context menu in Windows 11.
+:: Creates a registry key under HKCU that forces Explorer to use the old-style context menu.
+:: Usage: Run this in an elevated Command Prompt (Run as administrator).
+:: After running: restart Explorer or sign out/sign in for changes to take effect.
+:: Notes:
+:: - This only modifies the current user's registry (HKCU).
+:: - /f forces overwriting without prompt; /ve sets the default (empty) value.
+:: - Back up your registry or create a System Restore point before making changes.
+
 reg.exe add "HKCU\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32" /f /ve
