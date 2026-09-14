@@ -1,0 +1,929 @@
+<title>Paying Twice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..500&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  /* ground: a recycled-stock neutral, green-grey bias */
+  --paper:#EFEFEA; --surface:#F8F8F5; --wash:#E4E5DD; --wash-2:#DBDCD2;
+  --ink:#191C1A; --ink-2:#565B57; --ink-3:#7E857C;
+  --rule:#D3D4C9; --rule-2:#B4B6A9;
+  /* validated chart series (dataviz slots 2,3,1) */
+  --cost:#eb6834; --save:#1baf7a; --focus:#2a78d6;
+  /* contrast-safe text tints of the same hues */
+  --cost-ink:#A63E10; --save-ink:#146B4A; --focus-ink:#1B549E;
+  --cost-wash:rgba(235,104,52,.13); --save-wash:rgba(27,175,122,.13);
+  --neutral-mark:#8E9389;
+  --shadow:0 1px 2px rgba(25,28,26,.05), 0 8px 28px -18px rgba(25,28,26,.35);
+
+  --f-display:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Newsreader",Georgia,"Times New Roman",serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --measure:63ch;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --paper:#141715; --surface:#1C201D; --wash:#252A26; --wash-2:#2E342F;
+    --ink:#F2F3EE; --ink-2:#B2B8B0; --ink-3:#828A80;
+    --rule:#313630; --rule-2:#474E46;
+    --cost:#d95926; --save:#199e70; --focus:#3987e5;
+    --cost-ink:#F0895C; --save-ink:#4FD1A0; --focus-ink:#79B2F2;
+    --cost-wash:rgba(217,89,38,.17); --save-wash:rgba(25,158,112,.17);
+    --neutral-mark:#6E756B;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#141715; --surface:#1C201D; --wash:#252A26; --wash-2:#2E342F;
+  --ink:#F2F3EE; --ink-2:#B2B8B0; --ink-3:#828A80;
+  --rule:#313630; --rule-2:#474E46;
+  --cost:#d95926; --save:#199e70; --focus:#3987e5;
+  --cost-ink:#F0895C; --save-ink:#4FD1A0; --focus-ink:#79B2F2;
+  --cost-wash:rgba(217,89,38,.17); --save-wash:rgba(25,158,112,.17);
+  --neutral-mark:#6E756B;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:var(--f-body); font-size:1.0625rem; line-height:1.62;
+  margin:0; padding:0;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding-inline:24px}
+@media (max-width:600px){ .wrap{padding-inline:18px} }
+
+/* progress meter */
+#meter{position:fixed; inset:0 auto auto 0; height:2px; width:0%; background:var(--focus); z-index:50}
+
+/* ---- slide scaffold ---- */
+.slide{border-top:1px solid var(--rule); padding-block:clamp(44px,6vw,78px)}
+.slide:first-of-type{border-top:0}
+.eyebrow{
+  display:flex; align-items:baseline; gap:14px;
+  font-family:var(--f-mono); font-size:.7rem; font-weight:500;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--ink-3);
+  margin-bottom:20px;
+}
+.eyebrow .num{color:var(--ink); font-weight:700}
+.eyebrow .bar{flex:1; height:1px; background:var(--rule); align-self:center}
+
+h1,h2,h3{font-family:var(--f-display); text-wrap:balance; margin:0; letter-spacing:-.02em}
+h1{font-size:clamp(2.5rem,6vw,4.3rem); line-height:1.02; font-weight:600; letter-spacing:-.035em}
+h2{font-size:clamp(1.75rem,3.5vw,2.65rem); line-height:1.08; font-weight:600; max-width:20ch}
+h3{font-size:1.0625rem; line-height:1.3; font-weight:600; letter-spacing:-.005em}
+p{margin:0}
+.dek{font-size:clamp(1.1rem,1.7vw,1.3rem); line-height:1.5; color:var(--ink-2); max-width:56ch; margin-top:16px; font-weight:300}
+.prose{max-width:var(--measure); margin-top:22px; display:flex; flex-direction:column; gap:14px; color:var(--ink-2)}
+.prose strong{color:var(--ink); font-weight:600}
+.lede{font-size:1.15rem; color:var(--ink)}
+em.term{font-style:normal; font-family:var(--f-mono); font-size:.88em; color:var(--ink)}
+
+.label{font-family:var(--f-mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); font-weight:500}
+.fig{font-family:var(--f-mono); font-variant-numeric:tabular-nums; font-weight:700; letter-spacing:-.03em}
+
+/* ---- cover ---- */
+.cover{padding-block:clamp(52px,9vw,104px) clamp(44px,6vw,72px)}
+.cover .kicker{font-family:var(--f-mono); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--cost-ink); font-weight:700; margin-bottom:26px}
+.cover h1 em{font-style:italic; font-family:var(--f-body); font-weight:400; letter-spacing:-.01em}
+.headline-stat{
+  margin-top:40px; display:grid; gap:0;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  border:1px solid var(--rule-2); background:var(--surface); box-shadow:var(--shadow);
+}
+.headline-stat > div{padding:20px 22px; border-left:1px solid var(--rule)}
+.headline-stat > div:first-child{border-left:0}
+.headline-stat .fig{font-size:clamp(1.55rem,3.1vw,2.1rem); display:block; margin-bottom:6px}
+.headline-stat .cap{font-size:.8rem; line-height:1.4; color:var(--ink-2); font-family:var(--f-display)}
+.tint-cost .fig{color:var(--cost-ink)} .tint-save .fig{color:var(--save-ink)} .tint-focus .fig{color:var(--focus-ink)}
+
+/* ---- generic blocks ---- */
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:clamp(22px,3vw,40px); margin-top:32px; align-items:start}
+.grid3{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:22px; margin-top:32px}
+
+.panel{background:var(--surface); border:1px solid var(--rule); padding:22px 24px}
+.panel.raised{box-shadow:var(--shadow); border-color:var(--rule-2)}
+
+.deflist{display:flex; flex-direction:column; gap:0; margin-top:28px}
+.deflist > div{display:grid; grid-template-columns:minmax(140px,200px) 1fr; gap:18px; padding:14px 0; border-top:1px solid var(--rule)}
+.deflist > div:last-child{border-bottom:1px solid var(--rule)}
+.deflist dt, .deflist .k{font-family:var(--f-display); font-weight:600; font-size:.95rem; color:var(--ink)}
+.deflist .v{color:var(--ink-2); font-size:.98rem; line-height:1.55}
+@media (max-width:560px){ .deflist > div{grid-template-columns:1fr; gap:4px} }
+
+ul.ticks{list-style:none; padding:0; margin:18px 0 0; display:flex; flex-direction:column; gap:12px; color:var(--ink-2)}
+ul.ticks li{display:flex; gap:12px; font-size:1rem; line-height:1.5}
+ul.ticks li::before{content:""; flex:0 0 9px; width:9px; height:9px; margin-top:9px; background:var(--focus)}
+ul.ticks.save li::before{background:var(--save)}
+ul.ticks.cost li::before{background:var(--cost)}
+ul.ticks strong{color:var(--ink); font-weight:600}
+
+/* ---- tables ---- */
+.tablewrap{overflow-x:auto; margin-top:28px; border:1px solid var(--rule-2); background:var(--surface)}
+table{border-collapse:collapse; width:100%; min-width:540px; font-family:var(--f-display); font-size:.9rem}
+caption{text-align:left; padding:14px 18px; border-bottom:1px solid var(--rule-2); font-family:var(--f-mono); font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3)}
+th,td{padding:11px 18px; text-align:right; border-top:1px solid var(--rule)}
+th:first-child, td:first-child{text-align:left}
+thead th{border-top:0; font-weight:600; color:var(--ink-3); font-size:.74rem; letter-spacing:.06em; text-transform:uppercase}
+tbody td{font-variant-numeric:tabular-nums; font-family:var(--f-mono); color:var(--ink-2)}
+tbody td:first-child{font-family:var(--f-display); color:var(--ink)}
+tbody tr.total td{border-top:1px solid var(--rule-2); color:var(--ink); font-weight:700}
+tbody tr.total td:first-child{font-weight:700}
+td.d{color:var(--save-ink); font-weight:500}
+.rowsub{display:block; font-size:.78rem; color:var(--ink-3); font-family:var(--f-display); font-weight:400; margin-top:2px}
+
+/* ---- charts ---- */
+figure{margin:30px 0 0}
+figure svg{display:block; width:100%; height:auto; max-width:100%; overflow:visible}
+figcaption{margin-top:14px; font-size:.85rem; color:var(--ink-3); font-family:var(--f-display); line-height:1.5; max-width:68ch}
+.legend{display:flex; flex-wrap:wrap; gap:18px; margin-bottom:14px}
+.legend span{display:inline-flex; align-items:center; gap:8px; font-family:var(--f-display); font-size:.82rem; color:var(--ink-2)}
+.legend i{width:13px; height:13px; display:block; border-radius:1px}
+.ax{fill:var(--ink-3); font-family:"JetBrains Mono",monospace; font-size:11px; font-variant-numeric:tabular-nums}
+.cat{fill:var(--ink); font-family:"Instrument Sans",sans-serif; font-size:13px; font-weight:600}
+.val{fill:var(--ink); font-family:"JetBrains Mono",monospace; font-size:12.5px; font-weight:700; font-variant-numeric:tabular-nums}
+.val.on{fill:var(--surface)}
+.sub{fill:var(--ink-3); font-family:"Instrument Sans",sans-serif; font-size:11px}
+.gridline{stroke:var(--rule); stroke-width:1}
+.axisline{stroke:var(--rule-2); stroke-width:1}
+.zeroline{stroke:var(--ink-3); stroke-width:1; stroke-dasharray:3 3}
+.m-cost{fill:var(--cost)} .m-save{fill:var(--save)} .m-focus{fill:var(--focus)} .m-neutral{fill:var(--neutral-mark)}
+
+/* scroll containers for wide figures */
+.scrollx{overflow-x:auto; -webkit-overflow-scrolling:touch}
+.scrollx > svg{min-width:640px}
+
+/* tooltip */
+.plotwrap{position:relative}
+.tip{
+  position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-118%);
+  background:var(--ink); color:var(--paper); padding:9px 12px; font-family:var(--f-mono);
+  font-size:11.5px; line-height:1.55; white-space:nowrap; z-index:4; transition:opacity .1s;
+  font-variant-numeric:tabular-nums;
+}
+.tip b{font-weight:700; display:block; margin-bottom:4px; letter-spacing:.04em}
+.tip .sw{display:inline-block; width:8px; height:8px; margin-right:6px; vertical-align:baseline}
+
+/* ---- risk / callout ---- */
+.callout{margin-top:30px; border-left:3px solid var(--cost); background:var(--cost-wash); padding:20px 24px}
+.callout.good{border-left-color:var(--save); background:var(--save-wash)}
+.callout p{color:var(--ink-2); max-width:var(--measure)}
+.callout .label{margin-bottom:8px; display:block}
+
+.risk{display:grid; grid-template-columns:auto 1fr; gap:16px 20px; padding:18px 0; border-top:1px solid var(--rule)}
+.risk:last-of-type{border-bottom:1px solid var(--rule)}
+.risk .n{font-family:var(--f-mono); font-size:.72rem; font-weight:700; color:var(--cost-ink); letter-spacing:.08em; padding-top:3px}
+.risk h3{margin-bottom:5px}
+.risk p{color:var(--ink-2); font-size:.97rem; max-width:60ch}
+
+.gate{display:flex; gap:14px; align-items:flex-start; padding:16px 0; border-top:1px solid var(--rule)}
+.gate:last-child{border-bottom:1px solid var(--rule)}
+.gate .wk{font-family:var(--f-mono); font-size:.72rem; font-weight:700; letter-spacing:.08em; color:var(--focus-ink); min-width:74px; padding-top:3px}
+.gate div p{color:var(--ink-2); font-size:.96rem; margin-top:4px; max-width:58ch}
+
+footer{border-top:1px solid var(--rule-2); padding-block:36px 56px; color:var(--ink-3); font-size:.82rem; font-family:var(--f-display); line-height:1.65}
+footer a{color:var(--focus-ink)}
+footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
+
+:where(a,button,[tabindex]):focus-visible{outline:2px solid var(--focus); outline-offset:3px}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important; animation:none!important} }
+</style>
+<div id="meter"></div>
+<main class="wrap">
+
+<!-- ================= 01 COVER ================= -->
+<section class="slide cover">
+  <div class="kicker">Enterprise sustainability data platform &middot; cost case</div>
+  <h1>Half your Databricks bill is serving Power BI. <em>You already pay Microsoft to do that.</em></h1>
+  <p class="dek">A three-environment Databricks lakehouse for ESG and enterprise data management, and the case for folding it into the Fabric capacity the business has already committed to.</p>
+
+  <div class="headline-stat">
+    <div class="tint-cost">
+      <span class="fig">$261,552</span>
+      <span class="cap">Year-one all-in cost of the Databricks estate &mdash; dev, QA and prod</span>
+    </div>
+    <div class="tint-save">
+      <span class="fig">$123k&ndash;$211k</span>
+      <span class="cap">Annual run-rate reduction after consolidation, conservative to base case</span>
+    </div>
+    <div class="tint-focus">
+      <span class="fig">Month 20&ndash;29</span>
+      <span class="cap">Payback on a $233k migration programme, including parallel run</span>
+    </div>
+    <div>
+      <span class="fig">50.6%</span>
+      <span class="cap">Share of Databricks compute spent on BI serving &mdash; the duplicated layer</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 THE ESTATE ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">02</span><span>The estate</span><span class="bar"></span><span>What we are actually moving</span></div>
+  <h2>This is not a big-data problem. It is a reconciliation problem.</h2>
+  <div class="prose">
+    <p class="lede">Sustainability and enterprise data management for a group like this means pulling twelve systems into one auditable ledger, then defending every number to an assurance provider.</p>
+    <p>The volumes are modest. The lineage requirements are brutal. A single Scope&nbsp;3 Category&nbsp;6 figure has to trace back through a Concur expense line, an Amex statement row, a distance-based emission factor version, and a currency conversion &mdash; and survive a question about it eighteen months later.</p>
+  </div>
+
+  <div class="deflist">
+    <div><span class="k">SAP S/4HANA</span><span class="v">Purchase orders, GL, plant master, material movements. Scope&nbsp;3 Categories 1 and 4 originate here. Monthly close cadence, delta extraction.</span></div>
+    <div><span class="k">SAP Concur</span><span class="v">Employee travel and expense. Air, rail, hotel nights, mileage claims &rarr; Category&nbsp;6 and Category&nbsp;7.</span></div>
+    <div><span class="k">American Express</span><span class="v">Corporate card feed. Merchant-category-coded spend used for spend-based factors where activity data is absent.</span></div>
+    <div><span class="k">Utility &amp; site data</span><span class="v">Metered electricity, gas, water, waste manifests. Half-hourly where available, invoice-level where not. Scope&nbsp;1 and 2.</span></div>
+    <div><span class="k">Emission factor libraries</span><span class="v">DEFRA, EPA, IEA, supplier-specific. Versioned, effective-dated, and restated retrospectively &mdash; the single hardest modelling problem in the estate.</span></div>
+    <div><span class="k">Future sources</span><span class="v">Fleet telematics, supplier PCF exchanges, product LCA, HR systems for social metrics under ESRS S1.</span></div>
+  </div>
+
+  <div class="grid3">
+    <div class="panel"><span class="label">Curated estate</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">1.8 TB</span><span class="rowsub">~400 tables across bronze, silver and gold</span></p></div>
+    <div class="panel"><span class="label">Build team</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">6 people</span><span class="rowsub">4 engineers, 2 analysts, plus 0.6 FTE platform</span></p></div>
+    <div class="panel"><span class="label">Report consumers</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">~350</span><span class="rowsub">Site managers, finance, group ESG, external assurance</span></p></div>
+  </div>
+</section>
+
+<!-- ================= 03 THE BILL ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">03</span><span>The bill</span><span class="bar"></span><span>Three clusters, itemised</span></div>
+  <h2>What three Databricks environments actually cost.</h2>
+  <p class="dek">Azure Databricks Premium tier, US East, list rates. Compute is DBU spend plus the Azure VMs underneath classic clusters.</p>
+
+  <figure>
+    <div class="legend"><span><i class="m-cost" style="background:var(--cost)"></i>Monthly compute, USD</span></div>
+    <div class="scrollx">
+    <svg viewBox="0 0 700 190" role="img" aria-labelledby="c1t">
+      <title id="c1t">Monthly Databricks compute by environment: production $6,337, development $1,717, QA $1,332</title>
+      <line class="gridline" x1="268.6" y1="12" x2="268.6" y2="164"/>
+      <line class="gridline" x1="409.2" y1="12" x2="409.2" y2="164"/>
+      <line class="gridline" x1="549.8" y1="12" x2="549.8" y2="164"/>
+      <rect class="m-cost" x="128" y="20" width="445.4" height="34" rx="2"/>
+      <rect class="m-cost" x="128" y="70" width="120.7" height="34" rx="2" opacity="0.55"/>
+      <rect class="m-cost" x="128" y="120" width="93.6" height="34" rx="2" opacity="0.55"/>
+      <text class="cat" x="118" y="42" text-anchor="end">Production</text>
+      <text class="cat" x="118" y="92" text-anchor="end">Development</text>
+      <text class="cat" x="118" y="142" text-anchor="end">QA</text>
+      <text class="val" x="581.4" y="42">$6,337</text>
+      <text class="val" x="256.7" y="92">$1,717</text>
+      <text class="val" x="229.6" y="142">$1,332</text>
+      <text class="sub" x="637" y="42">68%</text>
+      <text class="sub" x="312" y="92">18%</text>
+      <text class="sub" x="285" y="142">14%</text>
+      <line class="axisline" x1="128" y1="164" x2="620" y2="164"/>
+      <text class="ax" x="128" y="180" text-anchor="middle">$0</text>
+      <text class="ax" x="268.6" y="180" text-anchor="middle">$2k</text>
+      <text class="ax" x="409.2" y="180" text-anchor="middle">$4k</text>
+      <text class="ax" x="549.8" y="180" text-anchor="middle">$6k</text>
+    </svg>
+    </div>
+    <figcaption>$9,386 per month, $112,632 per year in Databricks compute alone. Production is dominated not by the nightly ELT but by the SQL warehouse that feeds Power BI.</figcaption>
+  </figure>
+
+  <div class="tablewrap">
+    <table>
+      <caption>Databricks &mdash; year-one all-in, USD</caption>
+      <thead><tr><th>Line</th><th>Monthly</th><th>Annual</th></tr></thead>
+      <tbody>
+        <tr><td>Databricks compute<span class="rowsub">DBU + underlying Azure VMs, 3 environments</span></td><td>9,386</td><td>112,632</td></tr>
+        <tr><td>ADLS Gen2 storage &amp; transactions<span class="rowsub">Three copies of the estate, one per environment</span></td><td>780</td><td>9,360</td></tr>
+        <tr><td>Azure Data Factory<span class="rowsub">SAP extraction and cross-platform orchestration</span></td><td>1,150</td><td>13,800</td></tr>
+        <tr><td>Networking, private endpoints, egress</td><td>420</td><td>5,040</td></tr>
+        <tr><td>Key Vault, Log Analytics, monitoring</td><td>310</td><td>3,720</td></tr>
+        <tr><td>Platform engineering<span class="rowsub">0.6 FTE: cluster policies, Unity Catalog, Terraform, runtime upgrades</span></td><td>8,250</td><td>99,000</td></tr>
+        <tr><td>Support &amp; solution architect uplift</td><td>1,500</td><td>18,000</td></tr>
+        <tr class="total"><td>Total</td><td>21,796</td><td>261,552</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <figcaption style="margin-top:12px">Rates used: Jobs Compute $0.30/DBU, All-Purpose $0.55/DBU, SQL Pro $0.55/DBU, SQL Serverless $0.70/DBU. List pricing, Premium tier. A 20&ndash;30% committed-use discount is common at this volume and is modelled as a sensitivity on slide 08 &mdash; it does not change the conclusion.</figcaption>
+</section>
+
+<!-- ================= 04 THE DIAGNOSIS ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">04</span><span>The diagnosis</span><span class="bar"></span><span>Where the money goes</span></div>
+  <h2>Half of it is serving dashboards.</h2>
+  <p class="dek">Databricks prices elastic distributed compute. An ESG estate is small, bursty and governance-heavy. The mismatch shows up in one line.</p>
+
+  <figure>
+    <div class="legend">
+      <span><i style="background:var(--cost)"></i>SQL warehouses &mdash; prod, QA and dev</span>
+      <span><i style="background:var(--neutral-mark)"></i>Everything else</span>
+    </div>
+    <div class="scrollx">
+    <svg viewBox="0 0 760 230" role="img" aria-labelledby="c2t">
+      <title id="c2t">Monthly Databricks compute by workload: BI serving $4,752 (51%), batch ELT $2,381 (25%), interactive development $1,839 (20%), CI and idle overhang $414 (4%)</title>
+      <rect class="m-cost" x="150" y="16" width="475.2" height="36" rx="2"/>
+      <rect class="m-neutral" x="150" y="68" width="238.1" height="36" rx="2"/>
+      <rect class="m-neutral" x="150" y="120" width="183.9" height="36" rx="2"/>
+      <rect class="m-neutral" x="150" y="172" width="41.4" height="36" rx="2"/>
+      <text class="cat" x="140" y="39" text-anchor="end">BI serving</text>
+      <text class="cat" x="140" y="91" text-anchor="end">Batch ELT</text>
+      <text class="cat" x="140" y="143" text-anchor="end">Interactive dev</text>
+      <text class="cat" x="140" y="195" text-anchor="end">CI + idle</text>
+      <text class="val on" x="613" y="39" text-anchor="end">$4,752 &middot; 51%</text>
+      <text class="val on" x="376" y="91" text-anchor="end">$2,381 &middot; 25%</text>
+      <text class="val on" x="322" y="143" text-anchor="end">$1,839 &middot; 20%</text>
+      <text class="val" x="202" y="195">$414 &middot; 4%</text>
+      <line class="axisline" x1="150" y1="14" x2="150" y2="212"/>
+    </svg>
+    </div>
+    <figcaption>Monthly Databricks compute, split by what the compute is doing. The emphasised bar is the workload that a Fabric capacity is already provisioned to run.</figcaption>
+  </figure>
+
+  <div class="grid2">
+    <div>
+      <h3>Why serving dominates</h3>
+      <ul class="ticks cost">
+        <li>A SQL warehouse has to be <strong>warm</strong> to feel fast. Auto-stop at ten minutes still leaves it billing through the working day.</li>
+        <li>Power BI import refreshes hammer the warehouse on a schedule, then Power BI stores <strong>a second copy</strong> of the same data in a semantic model.</li>
+        <li>Concurrency from 350 consumers at month-end forces a size-up that runs all month.</li>
+        <li>Dev and QA each carry their own warehouse so report developers can test &mdash; $792 a month to serve nobody.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What is genuinely Databricks-shaped</h3>
+      <ul class="ticks">
+        <li><strong>Batch ELT and interactive development</strong> &mdash; $4,220 a month, 45% of compute. Real work, fairly priced, and portable.</li>
+        <li>Nothing in this estate needs sub-second streaming, a GPU, or a distributed training run.</li>
+        <li>The largest single table is 240&nbsp;GB. A single node handles most of the silver layer.</li>
+      </ul>
+      <div class="callout">
+        <span class="label">The finding</span>
+        <p>The estate pays a distributed-compute premium for a workload whose dominant cost is keeping a query engine warm for BI &mdash; on a tenant that already owns a query engine kept warm for BI.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 WHY NOW ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">05</span><span>Why now</span><span class="bar"></span><span>The committed capacity</span></div>
+  <h2>The second platform is already bought, and it is two-thirds idle.</h2>
+  <div class="prose">
+    <p class="lede">An F64 reservation costs roughly <em class="term">$5,003</em> a month &mdash; <em class="term">$60,036</em> a year &mdash; whether it runs one report or the whole estate. On a Power&nbsp;BI-only tenant it typically sits at 35&ndash;45% capacity-unit utilisation.</p>
+    <p>That is the whole argument. On committed capacity, the marginal cost of a workload is zero until you saturate the SKU. Every batch job moved onto headroom is a job that stops generating a Databricks invoice and starts generating nothing.</p>
+  </div>
+
+  <figure>
+    <div class="legend">
+      <span><i style="background:var(--focus)"></i>Capacity units in use</span>
+      <span><i style="background:var(--wash-2)"></i>Idle headroom &mdash; paid for either way</span>
+    </div>
+    <div class="scrollx">
+    <svg viewBox="0 0 700 168" role="img" aria-labelledby="c3t">
+      <title id="c3t">F64 capacity utilisation: 38 percent today with Power BI only, rising to 62 percent after the full estate moves</title>
+      <text class="cat" x="20" y="18">Today &mdash; Power BI serving only</text>
+      <rect x="20" y="26" width="660" height="38" rx="2" fill="var(--wash-2)"/>
+      <rect class="m-focus" x="20" y="26" width="250.8" height="38" rx="2"/>
+      <text class="val on" x="258" y="50" text-anchor="end">38%</text>
+      <text class="val" x="284" y="50">62% idle &middot; ~$37,200/yr of paid, unused capacity</text>
+
+      <text class="cat" x="20" y="100">After &mdash; full ESG estate on the same F64</text>
+      <rect x="20" y="108" width="660" height="38" rx="2" fill="var(--wash-2)"/>
+      <rect class="m-focus" x="20" y="108" width="409.2" height="38" rx="2"/>
+      <text class="val on" x="417" y="132" text-anchor="end">62%</text>
+      <text class="val" x="443" y="132">38% headroom retained</text>
+      <text class="ax" x="20" y="163">Modelled: +22% Spark ELT, +6% pipelines, &minus;4% from retiring import refreshes</text>
+    </svg>
+    </div>
+    <figcaption>Fabric smooths background operations over a 24-hour window and bursts interactive ones, so a nightly ELT peak does not have to be provisioned for. Mirroring&rsquo;s replication compute is free and does not draw capacity units at all.</figcaption>
+  </figure>
+
+  <div class="callout good">
+    <span class="label">Two things that are free, and shouldn&rsquo;t be</span>
+    <p>An F64 reservation includes <strong>64&nbsp;TB of mirroring storage</strong> &mdash; one free terabyte per capacity unit &mdash; against a 1.8&nbsp;TB estate. And at F64 and above, holders of a free Fabric licence with a viewer role can read Power&nbsp;BI content, so the ~350 report consumers need no Pro seats. Both are already paid for and neither is currently being used.</p>
+  </div>
+</section>
+
+<!-- ================= 06 ARCHITECTURE TODAY ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">06</span><span>Architecture &mdash; today</span><span class="bar"></span><span>Two stacks, two security models</span></div>
+  <h2>Everything crosses the boundary twice.</h2>
+
+  <figure>
+    <div class="scrollx">
+    <svg viewBox="0 0 1000 470" role="img" aria-labelledby="c4t">
+      <title id="c4t">Current architecture: sources land via Azure Data Factory into a Databricks lakehouse on ADLS Gen2 governed by Unity Catalog, then are copied again into Power BI import semantic models on the Fabric capacity, governed separately</title>
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0,0 L7,3.2 L0,6.4 z" fill="var(--ink-3)"/>
+        </marker>
+        <marker id="arc" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0,0 L7,3.2 L0,6.4 z" fill="var(--cost)"/>
+        </marker>
+      </defs>
+
+      <!-- sources -->
+      <text class="sub" x="16" y="30">SOURCE SYSTEMS</text>
+      <g>
+        <rect x="16" y="42" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="64" style="font-size:12px">SAP S/4HANA</text>
+        <rect x="16" y="84" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="106" style="font-size:12px">SAP Concur</text>
+        <rect x="16" y="126" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="148" style="font-size:12px">American Express</text>
+        <rect x="16" y="168" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="190" style="font-size:12px">Utilities &amp; sites</text>
+        <rect x="16" y="210" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="232" style="font-size:12px">Factor libraries</text>
+      </g>
+
+      <!-- ADF -->
+      <rect x="206" y="84" width="118" height="118" rx="2" fill="var(--surface)" stroke="var(--rule-2)"/>
+      <text class="cat" x="265" y="132" text-anchor="middle" style="font-size:12px">Azure Data</text>
+      <text class="cat" x="265" y="148" text-anchor="middle" style="font-size:12px">Factory</text>
+      <text class="sub" x="265" y="168" text-anchor="middle">$13,800/yr</text>
+      <line x1="170" y1="143" x2="200" y2="143" stroke="var(--ink-3)" marker-end="url(#ar)"/>
+
+      <!-- databricks stack -->
+      <rect x="360" y="30" width="290" height="244" rx="2" fill="none" stroke="var(--rule-2)" stroke-dasharray="4 3"/>
+      <text class="sub" x="374" y="50">AZURE DATABRICKS &middot; DEV / QA / PROD</text>
+      <rect x="378" y="62" width="254" height="40" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="392" y="87" style="font-size:12px">ADLS Gen2 &mdash; bronze / silver / gold</text>
+      <rect x="378" y="112" width="254" height="40" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="392" y="137" style="font-size:12px">Jobs compute &mdash; nightly ELT</text>
+      <rect x="378" y="162" width="254" height="40" rx="2" fill="var(--cost-wash)" stroke="var(--cost)"/>
+      <text class="cat" x="392" y="181" style="font-size:12px">DBSQL warehouse &mdash; serving</text>
+      <text class="sub" x="392" y="195" style="fill:var(--cost-ink)">$57,024/yr &middot; 51% of compute</text>
+      <rect x="378" y="212" width="254" height="36" rx="2" fill="var(--surface)" stroke="var(--rule-2)"/>
+      <text class="cat" x="392" y="235" style="font-size:12px">Unity Catalog &mdash; security model #1</text>
+      <line x1="328" y1="143" x2="372" y2="143" stroke="var(--ink-3)" marker-end="url(#ar)"/>
+
+      <!-- copy arrow -->
+      <path d="M636,182 L690,182 L690,304 L744,304" fill="none" stroke="var(--cost)" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#arc)"/>
+      <text class="sub" x="700" y="224" style="fill:var(--cost-ink)">scheduled import refresh</text>
+      <text class="sub" x="700" y="240" style="fill:var(--cost-ink)">&mdash; second copy of the data</text>
+
+      <!-- fabric stack -->
+      <rect x="736" y="252" width="250" height="186" rx="2" fill="none" stroke="var(--rule-2)" stroke-dasharray="4 3"/>
+      <text class="sub" x="750" y="272">FABRIC F64 &middot; ALREADY COMMITTED</text>
+      <rect x="752" y="284" width="218" height="40" rx="2" fill="var(--cost-wash)" stroke="var(--cost)"/>
+      <text class="cat" x="766" y="309" style="font-size:12px">Import semantic models</text>
+      <rect x="752" y="334" width="218" height="40" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="766" y="359" style="font-size:12px">Power BI reports &mdash; ~350 users</text>
+      <rect x="752" y="384" width="218" height="40" rx="2" fill="var(--surface)" stroke="var(--rule-2)"/>
+      <text class="cat" x="766" y="409" style="font-size:12px">Fabric RLS &mdash; security model #2</text>
+      <text class="sub" x="752" y="434">$60,036/yr &middot; 38% utilised</text>
+
+      <!-- annotations -->
+      <g>
+        <rect x="16" y="300" width="640" height="1" fill="var(--rule)"/>
+        <text class="cat" x="16" y="330" style="fill:var(--cost-ink)">Three duplications, each with a cost</text>
+        <text class="ax" x="16" y="356" style="font-size:12px">1 &nbsp; Storage &mdash; the estate exists in ADLS and again in the semantic model</text>
+        <text class="ax" x="16" y="378" style="font-size:12px">2 &nbsp; Compute &mdash; a warm DBSQL warehouse and a warm Fabric capacity, both serving BI</text>
+        <text class="ax" x="16" y="400" style="font-size:12px">3 &nbsp; Governance &mdash; Unity Catalog grants and Fabric RLS, maintained by hand, drifting apart</text>
+        <text class="ax" x="16" y="430" style="font-size:12px">Lineage breaks at the import boundary. An auditor tracing a tCO&#8322;e figure</text>
+        <text class="ax" x="16" y="450" style="font-size:12px">back to a Concur line has to cross it manually.</text>
+      </g>
+    </svg>
+    </div>
+  </figure>
+</section>
+
+<!-- ================= 07 ARCHITECTURE AFTER ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">07</span><span>Architecture &mdash; after</span><span class="bar"></span><span>One capacity, one lake</span></div>
+  <h2>One copy of the data, and every engine reads it in place.</h2>
+
+  <figure>
+    <div class="scrollx">
+    <svg viewBox="0 0 1000 420" role="img" aria-labelledby="c5t">
+      <title id="c5t">Target architecture: sources land via free Mirroring and in-capacity Data Factory pipelines into OneLake; Spark, Warehouse, data agents and Direct Lake semantic models all read the same copy; OneLake security and Purview govern the whole stack</title>
+      <defs>
+        <marker id="ar2" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0,0 L7,3.2 L0,6.4 z" fill="var(--ink-3)"/>
+        </marker>
+      </defs>
+
+      <text class="sub" x="16" y="88">SOURCE SYSTEMS</text>
+      <rect x="16" y="100" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="122" style="font-size:12px">SAP S/4HANA</text>
+      <rect x="16" y="142" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="164" style="font-size:12px">SAP Concur</text>
+      <rect x="16" y="184" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="206" style="font-size:12px">American Express</text>
+      <rect x="16" y="226" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="248" style="font-size:12px">Utilities &amp; sites</text>
+      <rect x="16" y="268" width="150" height="34" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/><text class="cat" x="30" y="290" style="font-size:12px">Factor libraries</text>
+
+      <rect x="200" y="128" width="132" height="66" rx="2" fill="var(--save-wash)" stroke="var(--save)"/>
+      <text class="cat" x="214" y="150" style="font-size:12px">Mirroring</text>
+      <text class="sub" x="214" y="166">zero copy &middot; free</text>
+      <text class="sub" x="214" y="182">compute, 64 TB free</text>
+      <rect x="200" y="212" width="132" height="66" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="214" y="234" style="font-size:12px">Data Factory</text>
+      <text class="sub" x="214" y="250">pipelines, in</text>
+      <text class="sub" x="214" y="266">capacity &mdash; ADF retired</text>
+      <line x1="170" y1="201" x2="196" y2="201" stroke="var(--ink-3)" marker-end="url(#ar2)"/>
+      <line x1="336" y1="201" x2="362" y2="201" stroke="var(--ink-3)" marker-end="url(#ar2)"/>
+
+      <rect x="368" y="52" width="616" height="348" rx="2" fill="none" stroke="var(--rule-2)"/>
+      <text class="sub" x="384" y="74">MICROSOFT FABRIC &mdash; ONE CAPACITY, ALREADY COMMITTED</text>
+
+      <rect x="384" y="84" width="584" height="46" rx="2" fill="var(--focus)" opacity="0.14"/>
+      <rect x="384" y="84" width="584" height="46" rx="2" fill="none" stroke="var(--focus)"/>
+      <text class="cat" x="398" y="104" style="font-size:12px">AI layer &mdash; Copilot in every workload, Fabric data agents, AI functions in notebooks</text>
+      <text class="sub" x="398" y="121">grounded on the same tables the CSRD report uses &middot; billed to the same capacity units</text>
+
+      <text x="676" y="146" text-anchor="middle" fill="var(--ink-3)" font-size="15">&#9650;</text>
+
+      <rect x="384" y="154" width="584" height="46" rx="2" fill="var(--surface)" stroke="var(--rule-2)"/>
+      <text class="cat" x="398" y="174" style="font-size:12px">Direct Lake semantic models &rarr; Power BI, ~350 free-licence viewers</text>
+      <text class="sub" x="398" y="191">no import refresh, no second copy, no Pro seats at F64 and above</text>
+
+      <text x="676" y="216" text-anchor="middle" fill="var(--ink-3)" font-size="15">&#9650;</text>
+
+      <rect x="384" y="224" width="140" height="56" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="396" y="246" style="font-size:12px">Spark</text><text class="sub" x="396" y="262">notebooks, ELT</text>
+      <rect x="532" y="224" width="140" height="56" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="544" y="246" style="font-size:12px">Warehouse</text><text class="sub" x="544" y="262">T-SQL, marts</text>
+      <rect x="680" y="224" width="140" height="56" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="692" y="246" style="font-size:12px">Real-Time</text><text class="sub" x="692" y="262">telematics, meters</text>
+      <rect x="828" y="224" width="140" height="56" rx="2" fill="var(--wash)" stroke="var(--rule-2)"/>
+      <text class="cat" x="840" y="246" style="font-size:12px">Data agents</text><text class="sub" x="840" y="262">natural-language Q&amp;A</text>
+
+      <text x="676" y="298" text-anchor="middle" fill="var(--ink-3)" font-size="15">&#9650;</text>
+
+      <rect x="384" y="306" width="584" height="46" rx="2" fill="var(--save-wash)" stroke="var(--save)"/>
+      <text class="cat" x="398" y="326" style="font-size:12px">OneLake &mdash; one copy, open Delta Parquet, 1.8 TB</text>
+      <text class="sub" x="398" y="343">bronze / silver / gold &middot; shortcuts keep anything that must stay where it is</text>
+
+      <rect x="384" y="360" width="584" height="30" rx="2" fill="var(--surface)" stroke="var(--rule-2)"/>
+      <text class="cat" x="398" y="380" style="font-size:12px">OneLake security + Microsoft Purview &mdash; one model, one lineage graph, end to end</text>
+    </svg>
+    </div>
+    <figcaption>Nothing here is speculative. Mirrored Azure Databricks catalogs are generally available, Direct Lake is the default serving mode on a Fabric capacity, and mirroring replication compute is documented as free and non-consuming of capacity units.</figcaption>
+  </figure>
+
+  <div class="grid2">
+    <div>
+      <h3>What disappears</h3>
+      <ul class="ticks save">
+        <li>The DBSQL warehouses in all three environments &mdash; <strong>$57,024 a year</strong>.</li>
+        <li>The Power BI import refresh cycle, and the second copy it maintains.</li>
+        <li>Azure Data Factory as a separate billed service &mdash; <strong>$13,800 a year</strong>.</li>
+        <li>Two of the three ADLS copies, and the sync jobs that kept them consistent.</li>
+        <li>The second security model, and the drift between them.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>What carries over almost unchanged</h3>
+      <ul class="ticks">
+        <li>PySpark notebooks. The estate is Delta-on-Parquet either side; most transforms port with a path change and a session-config edit.</li>
+        <li>The medallion layout, the ESG data model, and every business rule in it.</li>
+        <li>Git-backed CI/CD &mdash; Fabric deployment pipelines replace the Terraform-plus-notebook-sync arrangement.</li>
+        <li>The Delta tables themselves, read in place through shortcuts during the whole transition.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 08 THE NUMBERS ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">08</span><span>The numbers</span><span class="bar"></span><span>Run rate, three scenarios</span></div>
+  <h2>$151,000 a year, on the base case.</h2>
+  <p class="dek">Shown below at list prices, and assuming the capacity has to be uplifted from F64 to F128. The more likely outcome &mdash; existing headroom absorbs production &mdash; saves more.</p>
+
+  <figure>
+    <div class="legend">
+      <span><i style="background:var(--cost)"></i>Databricks today</span>
+      <span><i style="background:var(--save)"></i>Fabric after &mdash; base case</span>
+    </div>
+    <div class="scrollx">
+    <svg viewBox="0 0 800 264" role="img" aria-labelledby="c6t">
+      <title id="c6t">Annual cost comparison by line: compute and capacity $112,632 versus $67,668; surrounding Azure $31,920 versus $1,680; platform engineering $117,000 versus $41,250; total $261,552 versus $110,598</title>
+      <rect class="m-cost" x="190" y="18" width="208.6" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="40" width="125.3" height="18" rx="2"/>
+      <text class="cat" x="180" y="42" text-anchor="end">Compute &amp; capacity</text>
+      <text class="val" x="406" y="32">$112,632</text>
+      <text class="val" x="323" y="54">$67,668</text>
+
+      <rect class="m-cost" x="190" y="80" width="59.1" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="102" width="3.1" height="18" rx="2"/>
+      <text class="cat" x="180" y="104" text-anchor="end">Surrounding Azure</text>
+      <text class="val" x="257" y="94">$31,920</text>
+      <text class="val" x="201" y="116">$1,680</text>
+
+      <rect class="m-cost" x="190" y="142" width="216.7" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="164" width="76.4" height="18" rx="2"/>
+      <text class="cat" x="180" y="166" text-anchor="end">Platform engineering</text>
+      <text class="val" x="414" y="156">$117,000</text>
+      <text class="val" x="274" y="178">$41,250</text>
+
+      <line class="axisline" x1="0" y1="196" x2="800" y2="196"/>
+      <rect class="m-cost" x="190" y="210" width="484.4" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="232" width="204.8" height="18" rx="2"/>
+      <text class="cat" x="180" y="234" text-anchor="end">Total annual run rate</text>
+      <text class="val" x="682" y="224">$261,552</text>
+      <text class="val" x="402" y="246">$110,598</text>
+      <line class="axisline" x1="190" y1="14" x2="190" y2="254"/>
+    </svg>
+    </div>
+  </figure>
+
+  <div class="tablewrap">
+    <table>
+      <caption>Annual run rate, USD &mdash; base case</caption>
+      <thead><tr><th>Line</th><th>Databricks today</th><th>Fabric after</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td>Compute &amp; capacity<span class="rowsub">Fabric side: F64&rarr;F128 uplift, plus paused F8 QA and F4 dev</span></td><td>112,632</td><td>67,668</td><td class="d">&minus;44,964</td></tr>
+        <tr><td>Surrounding Azure<span class="rowsub">ADF, ADLS, networking, monitoring &rarr; OneLake storage only</span></td><td>31,920</td><td>1,680</td><td class="d">&minus;30,240</td></tr>
+        <tr><td>Platform engineering<span class="rowsub">0.6 FTE &rarr; 0.25 FTE; no cluster policies, no runtime treadmill</span></td><td>117,000</td><td>41,250</td><td class="d">&minus;75,750</td></tr>
+        <tr class="total"><td>Total annual run rate</td><td>261,552</td><td>110,598</td><td class="d">&minus;150,954</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid3">
+    <div class="panel raised">
+      <span class="label">Conservative</span>
+      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--focus-ink)">&minus;$122,796</span></p>
+      <p class="rowsub" style="margin-top:8px">Databricks on a 25% committed-use discount, Fabric needs the F128 uplift. Payback month 29.</p>
+    </div>
+    <div class="panel raised">
+      <span class="label">Base case</span>
+      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--save-ink)">&minus;$150,954</span></p>
+      <p class="rowsub" style="margin-top:8px">List prices, F128 uplift. The figure to plan against. Payback month 25.</p>
+    </div>
+    <div class="panel raised">
+      <span class="label">Best case</span>
+      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--cost-ink)">&minus;$210,990</span></p>
+      <p class="rowsub" style="margin-top:8px">Existing F64 headroom absorbs production &mdash; no uplift at all. Payback month 20.</p>
+    </div>
+  </div>
+  <figcaption style="margin-top:14px">The conservative column deliberately stacks the deck against the argument: it gives Databricks its best realistic price and Fabric its worst. It still saves $123,000 a year.</figcaption>
+</section>
+
+<!-- ================= 09 TIMELINE ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">09</span><span>The plan</span><span class="bar"></span><span>40 weeks, three decision gates</span></div>
+  <h2>Nothing is switched off until its replacement has reconciled.</h2>
+  <p class="dek">The first move is a mirror, not a migration. Unity Catalog tables appear in OneLake read-only with no data copied and no Databricks change &mdash; so phase one is reversible by deleting an item.</p>
+
+  <figure>
+    <div class="scrollx">
+    <svg viewBox="0 0 800 240" role="img" aria-labelledby="c7t">
+      <title id="c7t">Forty-week migration plan across five overlapping phases with decision gates at weeks 6, 20 and 34</title>
+      <line class="zeroline" x1="251.5" y1="20" x2="251.5" y2="200"/>
+      <line class="zeroline" x1="465" y1="20" x2="465" y2="200"/>
+      <line class="zeroline" x1="678.5" y1="20" x2="678.5" y2="200"/>
+      <text class="ax" x="251.5" y="14" text-anchor="middle">GATE 1</text>
+      <text class="ax" x="465" y="14" text-anchor="middle">GATE 2</text>
+      <text class="ax" x="678.5" y="14" text-anchor="middle">GATE 3</text>
+
+      <rect class="m-focus" x="160" y="28" width="91.5" height="24" rx="2"/>
+      <rect class="m-focus" x="221" y="64" width="183" height="24" rx="2" opacity="0.82"/>
+      <rect class="m-focus" x="343" y="100" width="183" height="24" rx="2" opacity="0.66"/>
+      <rect class="m-focus" x="465" y="136" width="152.5" height="24" rx="2" opacity="0.5"/>
+      <rect class="m-save" x="587" y="172" width="183" height="24" rx="2"/>
+
+      <text class="cat" x="150" y="45" text-anchor="end">Discovery</text>
+      <text class="cat" x="150" y="81" text-anchor="end">Ingestion</text>
+      <text class="cat" x="150" y="117" text-anchor="end">Transforms</text>
+      <text class="cat" x="150" y="153" text-anchor="end">Serving</text>
+      <text class="cat" x="150" y="189" text-anchor="end">Decommission</text>
+
+      <text class="val on" x="170" y="45" style="font-size:11px">wk 0&ndash;6</text>
+      <text class="val on" x="231" y="81" style="font-size:11px">wk 4&ndash;16</text>
+      <text class="val on" x="353" y="117" style="font-size:11px">wk 12&ndash;24</text>
+      <text class="val on" x="475" y="153" style="font-size:11px">wk 20&ndash;30</text>
+      <text class="val on" x="597" y="189" style="font-size:11px">wk 28&ndash;40</text>
+
+      <line class="axisline" x1="160" y1="206" x2="770" y2="206"/>
+      <text class="ax" x="160" y="224" text-anchor="middle">wk 0</text>
+      <text class="ax" x="282" y="224" text-anchor="middle">8</text>
+      <text class="ax" x="404" y="224" text-anchor="middle">16</text>
+      <text class="ax" x="526" y="224" text-anchor="middle">24</text>
+      <text class="ax" x="648" y="224" text-anchor="middle">32</text>
+      <text class="ax" x="770" y="224" text-anchor="middle">40</text>
+    </svg>
+    </div>
+  </figure>
+
+  <div class="gate"><span class="wk">WK 0&ndash;6</span><div><h3>Discovery &amp; mirror</h3><p>Stand up a Mirrored Azure Databricks Catalog. The whole estate becomes readable in OneLake with nothing copied. Port one complete ESG domain &mdash; Scope&nbsp;2 from metered utilities plus Concur travel &mdash; and measure its real capacity-unit draw against the live F64.</p></div></div>
+  <div class="gate"><span class="wk">WK 4&ndash;16</span><div><h3>Ingestion</h3><p>SAP, Concur and Amex extraction moves to Fabric Data Factory and mirroring. Azure Data Factory runs in parallel and is retired only once row counts and control totals match for two consecutive monthly closes.</p></div></div>
+  <div class="gate"><span class="wk">WK 12&ndash;24</span><div><h3>Transforms</h3><p>Silver and gold notebooks port to Fabric Spark. Emission-factor versioning and restatement logic &mdash; the hardest part of the estate &mdash; is ported first and reconciled against Databricks output to the tCO&#8322;e, not to the row count.</p></div></div>
+  <div class="gate"><span class="wk">WK 20&ndash;30</span><div><h3>Serving</h3><p>Semantic models rebuilt on Direct Lake. Reports repointed one workspace at a time. The DBSQL warehouses stay up through this phase &mdash; this is where the parallel-run cost sits, and it is deliberate.</p></div></div>
+  <div class="gate"><span class="wk">WK 28&ndash;40</span><div><h3>Decommission</h3><p>Dev and QA workspaces first &mdash; that is $36,588 a year off the bill with zero production exposure. Production last, after a full quarter-end close runs clean on Fabric, with a 30-day rollback window during which the Databricks workspace stays provisioned but idle.</p></div></div>
+</section>
+
+<!-- ================= 10 BREAK-EVEN ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">10</span><span>Payback</span><span class="bar"></span><span>Cumulative net position</span></div>
+  <h2>You are down $200,000 before you are up anything.</h2>
+  <p class="dek">The honest shape of this deal. A $233,000 programme &mdash; $185,000 of engineering and partner time, $48,000 of parallel run &mdash; lands before a single saving does.</p>
+
+  <figure>
+    <div class="legend">
+      <span><i style="background:var(--focus)"></i>Conservative &middot; break-even month 29</span>
+      <span><i style="background:var(--save)"></i>Base case &middot; month 25</span>
+      <span><i style="background:var(--cost)"></i>Best case &middot; month 20</span>
+    </div>
+    <div class="plotwrap scrollx" id="cfwrap">
+    <svg viewBox="0 0 800 360" role="img" aria-labelledby="c8t" id="cfsvg">
+      <title id="c8t">Cumulative net cash position over five years under three scenarios, all crossing zero between month 20 and month 29 and reaching $315,000 to $709,000 by year five</title>
+      <line class="gridline" x1="70" y1="305.5" x2="760" y2="305.5"/>
+      <line class="gridline" x1="70" y1="189.5" x2="760" y2="189.5"/>
+      <line class="gridline" x1="70" y1="131.5" x2="760" y2="131.5"/>
+      <line class="gridline" x1="70" y1="73.5" x2="760" y2="73.5"/>
+      <line class="zeroline" x1="70" y1="247.5" x2="760" y2="247.5"/>
+      <text class="ax" x="62" y="309" text-anchor="end">&minus;$200k</text>
+      <text class="ax" x="62" y="251" text-anchor="end">$0</text>
+      <text class="ax" x="62" y="193" text-anchor="end">$200k</text>
+      <text class="ax" x="62" y="135" text-anchor="end">$400k</text>
+      <text class="ax" x="62" y="77" text-anchor="end">$600k</text>
+
+      <rect x="296.6" y="247.5" width="109.4" height="9" fill="var(--ink-3)" opacity="0.25"/>
+
+      <polyline fill="none" stroke="var(--focus)" stroke-width="2" stroke-linejoin="round" points="70,247.5 104.5,267.8 139,290.23 173.5,307.5 208,298.6 242.5,289.7 277,280.79 311.5,271.89 346,262.99 380.5,254.09 415,245.18 449.5,236.28 484,227.38 518.5,218.47 553,209.57 587.5,200.67 622,191.77 656.5,182.86 691,173.96 725.5,165.06 760,156.15"/>
+      <polyline fill="none" stroke="var(--save)" stroke-width="2" stroke-linejoin="round" points="70,247.5 104.5,267.8 139,289.72 173.5,305.77 208,294.83 242.5,283.88 277,272.94 311.5,261.99 346,251.05 380.5,240.1 415,229.16 449.5,218.21 484,207.27 518.5,196.32 553,185.38 587.5,174.43 622,163.49 656.5,152.55 691,141.6 725.5,130.66 760,119.71"/>
+      <polyline fill="none" stroke="var(--cost)" stroke-width="2" stroke-linejoin="round" points="70,247.5 104.5,267.8 139,288.63 173.5,302.07 208,286.77 242.5,271.48 277,256.17 311.5,240.88 346,225.58 380.5,210.28 415,194.98 449.5,179.69 484,164.39 518.5,149.09 553,133.79 587.5,118.5 622,103.2 656.5,87.9 691,72.6 725.5,57.31 760,42.01"/>
+
+      <circle cx="760" cy="156.15" r="4.5" fill="var(--focus)" stroke="var(--paper)" stroke-width="2"/>
+      <circle cx="760" cy="119.71" r="4.5" fill="var(--save)" stroke="var(--paper)" stroke-width="2"/>
+      <circle cx="760" cy="42.01" r="4.5" fill="var(--cost)" stroke="var(--paper)" stroke-width="2"/>
+      <text class="val" x="752" y="152" text-anchor="end" style="fill:var(--focus-ink)">$315k</text>
+      <text class="val" x="752" y="115" text-anchor="end" style="fill:var(--save-ink)">$441k</text>
+      <text class="val" x="752" y="38" text-anchor="end" style="fill:var(--cost-ink)">$709k</text>
+
+      <line class="axisline" x1="70" y1="330" x2="760" y2="330"/>
+      <text class="ax" x="70" y="348">start</text>
+      <text class="ax" x="208" y="348" text-anchor="middle">Y1</text>
+      <text class="ax" x="346" y="348" text-anchor="middle">Y2</text>
+      <text class="ax" x="484" y="348" text-anchor="middle">Y3</text>
+      <text class="ax" x="622" y="348" text-anchor="middle">Y4</text>
+      <text class="ax" x="760" y="348" text-anchor="end">Y5</text>
+
+      <line id="cfcross" x1="0" y1="30" x2="0" y2="330" stroke="var(--ink-3)" stroke-width="1" opacity="0"/>
+      <circle id="cfd1" r="4" fill="var(--focus)" stroke="var(--paper)" stroke-width="2" opacity="0"/>
+      <circle id="cfd2" r="4" fill="var(--save)" stroke="var(--paper)" stroke-width="2" opacity="0"/>
+      <circle id="cfd3" r="4" fill="var(--cost)" stroke="var(--paper)" stroke-width="2" opacity="0"/>
+      <rect id="cfhit" x="70" y="30" width="690" height="300" fill="transparent" style="cursor:crosshair"/>
+    </svg>
+    <div class="tip" id="cftip"></div>
+    </div>
+    <figcaption>Cumulative net cash position, all three scenarios. The shaded band on the zero line is the break-even window, months&nbsp;20 to&nbsp;29. Savings are ramped: none in the first quarter, a quarter of run-rate by month&nbsp;6, sixty per cent by month&nbsp;9, full from month&nbsp;10. Hover the chart for quarterly figures.</figcaption>
+  </figure>
+
+  <div class="callout">
+    <span class="label">The one thing that changes this materially</span>
+    <p>If the Databricks commitment renews inside the next twelve months, time the cutover to the renewal date and the payback period collapses &mdash; you stop paying the old platform on the day you would otherwise have re-signed for it, rather than running out an unusable commitment. <strong>Do not start this mid-commit.</strong> That single scheduling decision is worth more than any technical choice in this deck.</p>
+  </div>
+</section>
+
+<!-- ================= 11 THE AI DIVIDEND ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">11</span><span>The dividend</span><span class="bar"></span><span>Why one layer compounds</span></div>
+  <h2>Every AI capability arriving in the next three years lands on the storage layer, not the compute layer.</h2>
+  <div class="prose">
+    <p class="lede">The cost case pays for the move. This is the part that makes it worth doing even if the cost case were neutral.</p>
+    <p>An agent is only as good as the semantic layer beneath it. Today a question like <em class="term">&ldquo;why did Category&nbsp;6 rise 14% in Q3?&rdquo;</em> has two possible answers in this estate, because the gold table in Databricks and the semantic model in Power BI are separately maintained. On one layer, there is one answer, and it is the same one the auditor sees.</p>
+  </div>
+
+  <div class="deflist">
+    <div><span class="k">One grounding store</span><span class="v">OneLake is where the agent looks. No vector-store sprawl, no export-to-index pipeline, no third copy of commercially sensitive supplier data sitting in a side system nobody governs.</span></div>
+    <div><span class="k">Fabric data agents</span><span class="v">Natural-language questions answered against the same tables and the same measures that produce the disclosure. A site manager asks about their own consumption; row-level security has already decided what &ldquo;their own&rdquo; means.</span></div>
+    <div><span class="k">AI functions in the pipeline</span><span class="v">Classifying 40,000 Amex merchant-coded transactions to emission-factor categories is a text-classification job, not an engineering job. It runs inline in a notebook and bills to the same capacity units as everything else.</span></div>
+    <div><span class="k">Copilot, everywhere, included</span><span class="v">In notebooks, in Data Factory, in DAX, in the warehouse. No separate seat, no separate contract, no separate approval cycle.</span></div>
+    <div><span class="k">Lineage that survives the question</span><span class="v">Purview lineage and sensitivity labels flow end to end. An assurance provider tracing a tCO&#8322;e figure back to a Concur line item follows one graph instead of two plus a spreadsheet.</span></div>
+    <div><span class="k">Sustainability data solutions</span><span class="v">A prebuilt ESG data model with 23 quantitative CSRD metrics, generally available in Fabric and mapped to ESRS and GRI disclosure points. This exists on one side of the comparison and not the other &mdash; and it is the single most expensive thing this team would otherwise build by hand.</span></div>
+  </div>
+
+  <div class="callout good">
+    <span class="label">The compounding argument</span>
+    <p>Every capability above gets better when there is more data on the layer, and none of them care which compute engine wrote it. Splitting the estate across two platforms means choosing, for each new capability, which half of your data it can see. Consolidating means never having that conversation again.</p>
+  </div>
+</section>
+
+<!-- ================= 12 RISKS ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">12</span><span>The other side</span><span class="bar"></span><span>Where this argument fails</span></div>
+  <h2>Five ways this goes wrong, and what to do about each.</h2>
+  <p class="dek">If a deck like this has no honest counter-case, it is marketing. These are the real ones.</p>
+
+  <div class="risk">
+    <span class="n">01</span>
+    <div><h3>Capacity throttling is a real operational risk</h3>
+      <p>Fabric smooths background work and bursts interactive work, but a saturated capacity throttles &mdash; and throttling hits report users, not just the batch job that caused it. Databricks solves this by spinning up another cluster and sending you the bill. <strong>Mitigation:</strong> surge protection and workspace-level capacity limits configured before cutover, ELT scheduled into the overnight window, and Gate&nbsp;1 exists specifically to measure real capacity-unit draw before committing to a SKU size.</p></div>
+  </div>
+  <div class="risk">
+    <span class="n">02</span>
+    <div><h3>The shortcut governance gap is not theoretical</h3>
+      <p>When Fabric reads Unity Catalog tables through shortcuts, Unity Catalog&rsquo;s access policies <strong>do not</strong> apply to Fabric users &mdash; access is brokered by the identity that configured the connection. Microsoft&rsquo;s own documentation calls out the potential for information-security policy violations. <strong>Mitigation:</strong> re-express every Unity Catalog grant as a OneLake data access role during phase one, driven off the same Entra groups, and treat the mapping as a deliverable with sign-off, not a configuration detail.</p></div>
+  </div>
+  <div class="risk">
+    <span class="n">03</span>
+    <div><h3>Keep Databricks if any of these are true</h3>
+      <p>A production MLflow model registry with real governance around it. Sub-minute streaming at genuine scale. A multi-cloud mandate that makes Azure-only a board-level problem. A large, deeply tuned Scala codebase. <strong>None of these are true of this estate</strong> &mdash; but if any becomes true, the answer is a small Databricks footprint alongside Fabric, reading OneLake through shortcuts, not a reversal.</p></div>
+  </div>
+  <div class="risk">
+    <span class="n">04</span>
+    <div><h3>Spark runtime parity has to be verified, not assumed</h3>
+      <p>Fabric&rsquo;s Spark runtime trails Databricks Runtime, and Delta Live Tables has no like-for-like equivalent. <strong>Mitigation:</strong> a feature audit in week one, before any commitment. If DLT is load-bearing in the current pipelines, the port is materially larger than the $185,000 modelled and the whole case needs re-running.</p></div>
+  </div>
+  <div class="risk">
+    <span class="n">05</span>
+    <div><h3>The savings are engineering-heavy, and people costs are the softest number here</h3>
+      <p>Half the modelled saving is 0.35 of a full-time platform engineer. That is only a saving if the role is genuinely reduced or redeployed &mdash; otherwise it is a capacity gain, which is valuable but is not cash. <strong>Be straight with the CFO about this.</strong> The hard-cash saving is $75,204 a year on the base case; the rest is capacity released.</p></div>
+  </div>
+</section>
+
+<!-- ================= 13 THE ASK ================= -->
+<section class="slide">
+  <div class="eyebrow"><span class="num">13</span><span>The ask</span><span class="bar"></span><span>Six weeks, one number to prove</span></div>
+  <h2>$58,000 and six weeks to replace this model with measurements.</h2>
+  <div class="prose">
+    <p class="lede">Everything in this deck is a model. Exactly one number decides whether it is right: how many capacity units the production ELT actually draws on the existing F64.</p>
+    <p>Phase one answers it, costs a fraction of the programme, and is reversible by deleting a Fabric item. No Databricks configuration changes. No data is copied. No report moves.</p>
+  </div>
+
+  <div class="deflist">
+    <div><span class="k">Weeks 1&ndash;2</span><span class="v">Mirror Unity Catalog into OneLake. Map every Unity Catalog grant to a OneLake data access role. Audit Spark runtime and DLT dependencies.</span></div>
+    <div><span class="k">Weeks 3&ndash;5</span><span class="v">Port one complete ESG domain &mdash; metered Scope&nbsp;2 plus Concur travel &mdash; to Fabric Spark and Direct Lake. Run it nightly beside the Databricks version.</span></div>
+    <div><span class="k">Week 6</span><span class="v">Gate&nbsp;1. Measured capacity-unit draw, reconciled tCO&#8322;e output, a runtime-parity finding, and a re-run of this cost model on real telemetry rather than assumptions.</span></div>
+  </div>
+
+  <div class="grid3">
+    <div class="panel raised"><span class="label">Phase one</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem">$58,000</span><span class="rowsub">6 weeks, 1.5 FTE plus partner. Reversible.</span></p></div>
+    <div class="panel raised"><span class="label">Full programme</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem">$233,000</span><span class="rowsub">40 weeks including 14 weeks of parallel run.</span></p></div>
+    <div class="panel raised"><span class="label">Five-year net</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--save-ink)">+$315k&ndash;$709k</span><span class="rowsub">Conservative to best case, after all programme costs.</span></p></div>
+  </div>
+
+  <div class="callout good">
+    <span class="label">The sentence to take to the board</span>
+    <p>The business is renting a second analytics platform to serve dashboards, on a tenant where it has already bought and committed to a platform that serves dashboards, and that second platform is two-thirds idle. That is not a technology argument. It is an invoice.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p><strong>Model assumptions.</strong> Azure Databricks Premium tier, US East, list pricing: Jobs Compute $0.30/DBU, All-Purpose $0.55/DBU, SQL Pro $0.55/DBU, SQL Serverless $0.70/DBU, plus underlying Azure VM cost for classic compute. Fabric F64 reserved at approximately $5,003/month against $8,410/month pay-as-you-go; F-SKU pay-as-you-go billed per second with a one-minute minimum, and pausable. Platform engineering loaded at $165,000/FTE. Estate sized at 1.8&nbsp;TB, ~400 tables, ~350 report consumers. Regional pricing, tier, and committed-use discounts all move these figures &mdash; the sensitivity on slide 08 is there for that reason. Replace every number here with Gate&nbsp;1 telemetry before anyone signs anything.</p>
+  <p class="srcs">
+    <a href="https://learn.microsoft.com/fabric/enterprise/licenses">Fabric licences &amp; capacity</a>
+    <a href="https://learn.microsoft.com/fabric/mirroring/overview#cost-of-mirroring">Cost of mirroring</a>
+    <a href="https://learn.microsoft.com/azure/databricks/partners/bi/fabric-mirror">Fabric &harr; Unity Catalog</a>
+    <a href="https://learn.microsoft.com/power-bi/support/premium-migration-faq">F-SKU billing &amp; pause</a>
+    <a href="https://learn.microsoft.com/industry/sustainability/whats-new-2024-10">Sustainability data solutions</a>
+    <a href="https://azure.microsoft.com/pricing/details/microsoft-fabric/">Fabric pricing</a>
+  </p>
+</footer>
+</main>
+
+<script>
+(function(){
+  var meter = document.getElementById('meter');
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    meter.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  // cumulative cashflow hover
+  var svg = document.getElementById('cfsvg');
+  if (!svg) return;
+  var wrap = document.getElementById('cfwrap'),
+      tip  = document.getElementById('cftip'),
+      hit  = document.getElementById('cfhit'),
+      cross= document.getElementById('cfcross'),
+      dots = [document.getElementById('cfd1'), document.getElementById('cfd2'), document.getElementById('cfd3')];
+
+  var cons = [0,-70.0,-147.33,-206.91,-176.21,-145.51,-114.81,-84.11,-53.41,-22.71,7.99,38.69,69.39,100.09,130.79,161.49,192.19,222.89,253.59,284.29,314.99];
+  var base = [0,-70.0,-145.57,-200.93,-163.19,-125.45,-87.71,-49.97,-12.23,25.51,63.25,100.99,138.73,176.47,214.21,251.95,289.69,327.43,365.17,402.91,440.65];
+  var best = [0,-70.0,-141.81,-188.16,-135.41,-82.66,-29.91,22.84,75.59,128.34,181.09,233.84,286.59,339.34,392.09,444.84,497.59,550.34,603.09,655.84,708.59];
+  var series = [
+    {v:cons, name:'Conservative', css:'var(--focus)'},
+    {v:base, name:'Base case',    css:'var(--save)'},
+    {v:best, name:'Best case',    css:'var(--cost)'}
+  ];
+  var X = function(q){ return 70 + q*34.5; },
+      Y = function(v){ return 247.5 - v*0.29; };
+
+  function money(k){
+    var s = (k < 0 ? '−' : '+') + '$' + Math.abs(Math.round(k*1000)).toLocaleString('en-US');
+    return s;
+  }
+  function show(evt){
+    var pt = svg.createSVGPoint();
+    pt.x = evt.clientX; pt.y = evt.clientY;
+    var loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+    var q = Math.max(0, Math.min(20, Math.round((loc.x - 70) / 34.5)));
+    var x = X(q);
+    cross.setAttribute('x1', x); cross.setAttribute('x2', x); cross.setAttribute('opacity', '.5');
+    series.forEach(function(s, i){
+      dots[i].setAttribute('cx', x);
+      dots[i].setAttribute('cy', Y(s.v[q]));
+      dots[i].setAttribute('opacity', '1');
+    });
+    var rows = series.map(function(s){
+      return '<span class="sw" style="background:'+s.css+'"></span>' + s.name + '  ' + money(s.v[q]);
+    }).join('<br>');
+    tip.innerHTML = '<b>QUARTER ' + q + ' · MONTH ' + (q*3) + '</b>' + rows;
+    var r = svg.getBoundingClientRect();
+    tip.style.left = (r.left - wrap.getBoundingClientRect().left + (x/800)*r.width) + 'px';
+    tip.style.top  = (Y(series[2].v[q])/360)*r.height + 'px';
+    tip.style.opacity = '1';
+  }
+  function hide(){
+    tip.style.opacity = '0';
+    cross.setAttribute('opacity', '0');
+    dots.forEach(function(d){ d.setAttribute('opacity','0'); });
+  }
+  hit.addEventListener('pointermove', show);
+  hit.addEventListener('pointerleave', hide);
+})();
+</script>
