@@ -199,20 +199,20 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
 <section class="slide cover">
   <div class="kicker">Enterprise sustainability data platform &middot; cost case</div>
   <h1>Half your Databricks bill is serving Power BI. <em>You already pay Microsoft to do that.</em></h1>
-  <p class="dek">A three-environment Databricks lakehouse for ESG and enterprise data management, and the case for folding it into the Fabric capacity the business has already committed to.</p>
+  <p class="dek">A three-environment Databricks lakehouse for ESG and enterprise data management, and the case for folding it into the Fabric capacity the business has already committed to. Platform costs only &mdash; no headcount on either side of the comparison.</p>
 
   <div class="headline-stat">
     <div class="tint-cost">
-      <span class="fig">$261,552</span>
-      <span class="cap">Year-one all-in cost of the Databricks estate &mdash; dev, QA and prod</span>
+      <span class="fig">$144,552</span>
+      <span class="cap">Annual technology cost of the Databricks estate &mdash; dev, QA and prod</span>
     </div>
     <div class="tint-save">
-      <span class="fig">$123k&ndash;$211k</span>
-      <span class="cap">Annual run-rate reduction after consolidation, conservative to base case</span>
+      <span class="fig">$47k&ndash;$135k</span>
+      <span class="cap">Annual platform run-rate reduction, conservative to best case</span>
     </div>
     <div class="tint-focus">
-      <span class="fig">Month 20&ndash;29</span>
-      <span class="cap">Payback on a $233k migration programme, including parallel run</span>
+      <span class="fig">Month 27&ndash;44</span>
+      <span class="cap">Payback on a $233k programme, best to base case. Conservative never clears</span>
     </div>
     <div>
       <span class="fig">50.6%</span>
@@ -241,7 +241,7 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
 
   <div class="grid3">
     <div class="panel"><span class="label">Curated estate</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">1.8 TB</span><span class="rowsub">~400 tables across bronze, silver and gold</span></p></div>
-    <div class="panel"><span class="label">Build team</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">6 people</span><span class="rowsub">4 engineers, 2 analysts, plus 0.6 FTE platform</span></p></div>
+    <div class="panel"><span class="label">Build team</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">6 people</span><span class="rowsub">4 engineers and 2 analysts building on the estate</span></p></div>
     <div class="panel"><span class="label">Report consumers</span><p style="margin-top:8px"><span class="fig" style="font-size:1.5rem">~350</span><span class="rowsub">Site managers, finance, group ESG, external assurance</span></p></div>
   </div>
 </section>
@@ -284,7 +284,7 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
 
   <div class="tablewrap">
     <table>
-      <caption>Databricks &mdash; year-one all-in, USD</caption>
+      <caption>Databricks &mdash; annual technology cost, USD</caption>
       <thead><tr><th>Line</th><th>Monthly</th><th>Annual</th></tr></thead>
       <tbody>
         <tr><td>Databricks compute<span class="rowsub">DBU + underlying Azure VMs, 3 environments</span></td><td>9,386</td><td>112,632</td></tr>
@@ -292,13 +292,11 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
         <tr><td>Azure Data Factory<span class="rowsub">SAP extraction and cross-platform orchestration</span></td><td>1,150</td><td>13,800</td></tr>
         <tr><td>Networking, private endpoints, egress</td><td>420</td><td>5,040</td></tr>
         <tr><td>Key Vault, Log Analytics, monitoring</td><td>310</td><td>3,720</td></tr>
-        <tr><td>Platform engineering<span class="rowsub">0.6 FTE: cluster policies, Unity Catalog, Terraform, runtime upgrades</span></td><td>8,250</td><td>99,000</td></tr>
-        <tr><td>Support &amp; solution architect uplift</td><td>1,500</td><td>18,000</td></tr>
-        <tr class="total"><td>Total</td><td>21,796</td><td>261,552</td></tr>
+        <tr class="total"><td>Total technology cost</td><td>12,046</td><td>144,552</td></tr>
       </tbody>
     </table>
   </div>
-  <figcaption style="margin-top:12px">Rates used: Jobs Compute $0.30/DBU, All-Purpose $0.55/DBU, SQL Pro $0.55/DBU, SQL Serverless $0.70/DBU. List pricing, Premium tier. A 20&ndash;30% committed-use discount is common at this volume and is modelled as a sensitivity on slide 08 &mdash; it does not change the conclusion.</figcaption>
+  <figcaption style="margin-top:12px">Rates used: Jobs Compute $0.30/DBU, All-Purpose $0.55/DBU, SQL Pro $0.55/DBU, SQL Serverless $0.70/DBU. List pricing, Premium tier. A 20&ndash;30% committed-use discount is common at this volume and is modelled as a sensitivity on slide 08. One secondary source quotes Azure Premium Jobs Compute at $0.15/DBU rather than $0.30; if that holds for this region and tier, the batch lines halve &mdash; about $13,000 a year. Verify against an actual invoice before presenting.</figcaption>
 </section>
 
 <!-- ================= 04 THE DIAGNOSIS ================= -->
@@ -575,8 +573,8 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
 <!-- ================= 08 THE NUMBERS ================= -->
 <section class="slide">
   <div class="eyebrow"><span class="num">08</span><span>The numbers</span><span class="bar"></span><span>Run rate, three scenarios</span></div>
-  <h2>$151,000 a year, on the base case.</h2>
-  <p class="dek">Shown below at list prices, and assuming the capacity has to be uplifted from F64 to F128. The more likely outcome &mdash; existing headroom absorbs production &mdash; saves more.</p>
+  <h2>$75,000 a year, on the base case.</h2>
+  <p class="dek">Platform against platform, no headcount on either side. Shown at list prices and assuming the capacity has to be uplifted from F64 to F128 &mdash; the pessimistic capacity assumption.</p>
 
   <figure>
     <div class="legend">
@@ -584,46 +582,39 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
       <span><i style="background:var(--save)"></i>Fabric after &mdash; base case</span>
     </div>
     <div class="scrollx">
-    <svg viewBox="0 0 800 264" role="img" aria-labelledby="c6t">
-      <title id="c6t">Annual cost comparison by line: compute and capacity $112,632 versus $67,668; surrounding Azure $31,920 versus $1,680; platform engineering $117,000 versus $41,250; total $261,552 versus $110,598</title>
-      <rect class="m-cost" x="190" y="18" width="208.6" height="18" rx="2"/>
-      <rect class="m-save" x="190" y="40" width="125.3" height="18" rx="2"/>
+    <svg viewBox="0 0 800 200" role="img" aria-labelledby="c6t">
+      <title id="c6t">Annual technology cost by line: compute and capacity $112,632 versus $67,668; surrounding Azure $31,920 versus $1,680; total $144,552 versus $69,348</title>
+      <rect class="m-cost" x="190" y="18" width="375.4" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="40" width="225.6" height="18" rx="2"/>
       <text class="cat" x="180" y="42" text-anchor="end">Compute &amp; capacity</text>
-      <text class="val" x="406" y="32">$112,632</text>
-      <text class="val" x="323" y="54">$67,668</text>
+      <text class="val" x="573" y="32">$112,632</text>
+      <text class="val" x="423" y="54">$67,668</text>
 
-      <rect class="m-cost" x="190" y="80" width="59.1" height="18" rx="2"/>
-      <rect class="m-save" x="190" y="102" width="3.1" height="18" rx="2"/>
+      <rect class="m-cost" x="190" y="80" width="106.4" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="102" width="5.6" height="18" rx="2"/>
       <text class="cat" x="180" y="104" text-anchor="end">Surrounding Azure</text>
-      <text class="val" x="257" y="94">$31,920</text>
-      <text class="val" x="201" y="116">$1,680</text>
+      <text class="val" x="304" y="94">$31,920</text>
+      <text class="val" x="204" y="116">$1,680</text>
 
-      <rect class="m-cost" x="190" y="142" width="216.7" height="18" rx="2"/>
-      <rect class="m-save" x="190" y="164" width="76.4" height="18" rx="2"/>
-      <text class="cat" x="180" y="166" text-anchor="end">Platform engineering</text>
-      <text class="val" x="414" y="156">$117,000</text>
-      <text class="val" x="274" y="178">$41,250</text>
-
-      <line class="axisline" x1="0" y1="196" x2="800" y2="196"/>
-      <rect class="m-cost" x="190" y="210" width="484.4" height="18" rx="2"/>
-      <rect class="m-save" x="190" y="232" width="204.8" height="18" rx="2"/>
-      <text class="cat" x="180" y="234" text-anchor="end">Total annual run rate</text>
-      <text class="val" x="682" y="224">$261,552</text>
-      <text class="val" x="402" y="246">$110,598</text>
-      <line class="axisline" x1="190" y1="14" x2="190" y2="254"/>
+      <line class="axisline" x1="0" y1="134" x2="800" y2="134"/>
+      <rect class="m-cost" x="190" y="148" width="481.8" height="18" rx="2"/>
+      <rect class="m-save" x="190" y="170" width="231.2" height="18" rx="2"/>
+      <text class="cat" x="180" y="172" text-anchor="end">Total annual run rate</text>
+      <text class="val" x="680" y="162">$144,552</text>
+      <text class="val" x="429" y="184">$69,348</text>
+      <line class="axisline" x1="190" y1="14" x2="190" y2="192"/>
     </svg>
     </div>
   </figure>
 
   <div class="tablewrap">
     <table>
-      <caption>Annual run rate, USD &mdash; base case</caption>
+      <caption>Annual technology run rate, USD &mdash; base case</caption>
       <thead><tr><th>Line</th><th>Databricks today</th><th>Fabric after</th><th>Change</th></tr></thead>
       <tbody>
         <tr><td>Compute &amp; capacity<span class="rowsub">Fabric side: F64&rarr;F128 uplift, plus paused F8 QA and F4 dev</span></td><td>112,632</td><td>67,668</td><td class="d">&minus;44,964</td></tr>
         <tr><td>Surrounding Azure<span class="rowsub">ADF, ADLS, networking, monitoring &rarr; OneLake storage only</span></td><td>31,920</td><td>1,680</td><td class="d">&minus;30,240</td></tr>
-        <tr><td>Platform engineering<span class="rowsub">0.6 FTE &rarr; 0.25 FTE; no cluster policies, no runtime treadmill</span></td><td>117,000</td><td>41,250</td><td class="d">&minus;75,750</td></tr>
-        <tr class="total"><td>Total annual run rate</td><td>261,552</td><td>110,598</td><td class="d">&minus;150,954</td></tr>
+        <tr class="total"><td>Total annual run rate</td><td>144,552</td><td>69,348</td><td class="d">&minus;75,204</td></tr>
       </tbody>
     </table>
   </div>
@@ -631,21 +622,21 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
   <div class="grid3">
     <div class="panel raised">
       <span class="label">Conservative</span>
-      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--focus-ink)">&minus;$122,796</span></p>
-      <p class="rowsub" style="margin-top:8px">Databricks on a 25% committed-use discount, Fabric needs the F128 uplift. Payback month 29.</p>
+      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--focus-ink)">&minus;$47,046</span></p>
+      <p class="rowsub" style="margin-top:8px">Databricks on a 25% committed-use discount, Fabric needs the F128 uplift. Does not pay back inside five years.</p>
     </div>
     <div class="panel raised">
       <span class="label">Base case</span>
-      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--save-ink)">&minus;$150,954</span></p>
-      <p class="rowsub" style="margin-top:8px">List prices, F128 uplift. The figure to plan against. Payback month 25.</p>
+      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--save-ink)">&minus;$75,204</span></p>
+      <p class="rowsub" style="margin-top:8px">List prices, F128 uplift. The figure to plan against. Payback month 44.</p>
     </div>
     <div class="panel raised">
       <span class="label">Best case</span>
-      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--cost-ink)">&minus;$210,990</span></p>
-      <p class="rowsub" style="margin-top:8px">Existing F64 headroom absorbs production &mdash; no uplift at all. Payback month 20.</p>
+      <p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--cost-ink)">&minus;$135,240</span></p>
+      <p class="rowsub" style="margin-top:8px">Existing F64 headroom absorbs production &mdash; no uplift at all. Payback month 27.</p>
     </div>
   </div>
-  <figcaption style="margin-top:14px">The conservative column deliberately stacks the deck against the argument: it gives Databricks its best realistic price and Fabric its worst. It still saves $123,000 a year.</figcaption>
+  <figcaption style="margin-top:14px">The conservative column deliberately stacks the deck against the argument: it gives Databricks its best realistic price and Fabric its worst. It still saves $47,000 a year &mdash; but as slide 10 shows, not enough to repay the migration inside five years. The spread between these three columns is the whole reason Gate&nbsp;1 exists.</figcaption>
 </section>
 
 <!-- ================= 09 TIMELINE ================= -->
@@ -704,41 +695,43 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
 <!-- ================= 10 BREAK-EVEN ================= -->
 <section class="slide">
   <div class="eyebrow"><span class="num">10</span><span>Payback</span><span class="bar"></span><span>Cumulative net position</span></div>
-  <h2>You are down $200,000 before you are up anything.</h2>
-  <p class="dek">The honest shape of this deal. A $233,000 programme &mdash; $185,000 of engineering and partner time, $48,000 of parallel run &mdash; lands before a single saving does.</p>
+  <h2>On technology alone this is a patient investment, and one case never clears.</h2>
+  <p class="dek">A $233,000 one-time programme &mdash; $185,000 of engineering and partner time, $48,000 of parallel run &mdash; lands before a single saving does. Against a platform-only saving, it takes years to earn back.</p>
 
   <figure>
     <div class="legend">
-      <span><i style="background:var(--focus)"></i>Conservative &middot; break-even month 29</span>
-      <span><i style="background:var(--save)"></i>Base case &middot; month 25</span>
-      <span><i style="background:var(--cost)"></i>Best case &middot; month 20</span>
+      <span><i style="background:var(--focus)"></i>Conservative &middot; still negative at year 5</span>
+      <span><i style="background:var(--save)"></i>Base case &middot; break-even month 44</span>
+      <span><i style="background:var(--cost)"></i>Best case &middot; break-even month 27</span>
     </div>
     <div class="plotwrap scrollx" id="cfwrap">
     <svg viewBox="0 0 800 360" role="img" aria-labelledby="c8t" id="cfsvg">
-      <title id="c8t">Cumulative net cash position over five years under three scenarios, all crossing zero between month 20 and month 29 and reaching $315,000 to $709,000 by year five</title>
-      <line class="gridline" x1="70" y1="305.5" x2="760" y2="305.5"/>
-      <line class="gridline" x1="70" y1="189.5" x2="760" y2="189.5"/>
-      <line class="gridline" x1="70" y1="131.5" x2="760" y2="131.5"/>
-      <line class="gridline" x1="70" y1="73.5" x2="760" y2="73.5"/>
-      <line class="zeroline" x1="70" y1="247.5" x2="760" y2="247.5"/>
-      <text class="ax" x="62" y="309" text-anchor="end">&minus;$200k</text>
-      <text class="ax" x="62" y="251" text-anchor="end">$0</text>
-      <text class="ax" x="62" y="193" text-anchor="end">$200k</text>
-      <text class="ax" x="62" y="135" text-anchor="end">$400k</text>
-      <text class="ax" x="62" y="77" text-anchor="end">$600k</text>
+      <title id="c8t">Cumulative net cash position over five years under three scenarios, with break-even between month 27 and month 44 on two of three scenarios, ending between &minus;$23,000 and +$371,000 at year five</title>
+      <line class="gridline" x1="70" y1="297.69" x2="760" y2="297.69"/>
+      <line class="gridline" x1="70" y1="253.08" x2="760" y2="253.08"/>
+      <line class="gridline" x1="70" y1="163.85" x2="760" y2="163.85"/>
+      <line class="gridline" x1="70" y1="119.23" x2="760" y2="119.23"/>
+      <line class="gridline" x1="70" y1="74.62" x2="760" y2="74.62"/>
+      <line class="zeroline" x1="70" y1="208.46" x2="760" y2="208.46"/>
+      <text class="ax" x="62" y="301" text-anchor="end">&minus;$200k</text>
+      <text class="ax" x="62" y="256.5" text-anchor="end">&minus;$100k</text>
+      <text class="ax" x="62" y="212" text-anchor="end">$0</text>
+      <text class="ax" x="62" y="167.4" text-anchor="end">$100k</text>
+      <text class="ax" x="62" y="122.8" text-anchor="end">$200k</text>
+      <text class="ax" x="62" y="78.2" text-anchor="end">$300k</text>
 
-      <rect x="296.6" y="247.5" width="109.4" height="9" fill="var(--ink-3)" opacity="0.25"/>
+      <rect x="381.9" y="208.46" width="189.8" height="9" fill="var(--ink-3)" opacity="0.25"/>
 
-      <polyline fill="none" stroke="var(--focus)" stroke-width="2" stroke-linejoin="round" points="70,247.5 104.5,267.8 139,290.23 173.5,307.5 208,298.6 242.5,289.7 277,280.79 311.5,271.89 346,262.99 380.5,254.09 415,245.18 449.5,236.28 484,227.38 518.5,218.47 553,209.57 587.5,200.67 622,191.77 656.5,182.86 691,173.96 725.5,165.06 760,156.15"/>
-      <polyline fill="none" stroke="var(--save)" stroke-width="2" stroke-linejoin="round" points="70,247.5 104.5,267.8 139,289.72 173.5,305.77 208,294.83 242.5,283.88 277,272.94 311.5,261.99 346,251.05 380.5,240.1 415,229.16 449.5,218.21 484,207.27 518.5,196.32 553,185.38 587.5,174.43 622,163.49 656.5,152.55 691,141.6 725.5,130.66 760,119.71"/>
-      <polyline fill="none" stroke="var(--cost)" stroke-width="2" stroke-linejoin="round" points="70,247.5 104.5,267.8 139,288.63 173.5,302.07 208,286.77 242.5,271.48 277,256.17 311.5,240.88 346,225.58 380.5,210.28 415,194.98 449.5,179.69 484,164.39 518.5,149.09 553,133.79 587.5,118.5 622,103.2 656.5,87.9 691,72.6 725.5,57.31 760,42.01"/>
+      <polyline fill="none" stroke="var(--focus)" stroke-width="2" stroke-linejoin="round" points="70.0,208.46 104.5,239.69 139.0,276.3 173.5,307.95 208.0,302.7 242.5,297.46 277.0,292.21 311.5,286.96 346.0,281.71 380.5,276.47 415.0,271.22 449.5,265.97 484.0,260.73 518.5,255.48 553.0,250.23 587.5,244.98 622.0,239.74 656.5,234.49 691.0,229.24 725.5,223.99 760.0,218.74"/>
+      <polyline fill="none" stroke="var(--save)" stroke-width="2" stroke-linejoin="round" points="70.0,208.46 104.5,239.69 139.0,275.52 173.5,305.28 208.0,296.9 242.5,288.51 277.0,280.12 311.5,271.73 346.0,263.34 380.5,254.95 415.0,246.57 449.5,238.18 484.0,229.79 518.5,221.4 553.0,213.02 587.5,204.63 622.0,196.24 656.5,187.85 691.0,179.46 725.5,171.07 760.0,162.69"/>
+      <polyline fill="none" stroke="var(--cost)" stroke-width="2" stroke-linejoin="round" points="70.0,208.46 104.5,239.69 139.0,273.84 173.5,299.59 208.0,284.51 242.5,269.42 277.0,254.34 311.5,239.25 346.0,224.17 380.5,209.08 415.0,194.0 449.5,178.92 484.0,163.83 518.5,148.75 553.0,133.66 587.5,118.58 622.0,103.49 656.5,88.41 691.0,73.33 725.5,58.24 760.0,43.16"/>
 
-      <circle cx="760" cy="156.15" r="4.5" fill="var(--focus)" stroke="var(--paper)" stroke-width="2"/>
-      <circle cx="760" cy="119.71" r="4.5" fill="var(--save)" stroke="var(--paper)" stroke-width="2"/>
-      <circle cx="760" cy="42.01" r="4.5" fill="var(--cost)" stroke="var(--paper)" stroke-width="2"/>
-      <text class="val" x="752" y="152" text-anchor="end" style="fill:var(--focus-ink)">$315k</text>
-      <text class="val" x="752" y="115" text-anchor="end" style="fill:var(--save-ink)">$441k</text>
-      <text class="val" x="752" y="38" text-anchor="end" style="fill:var(--cost-ink)">$709k</text>
+      <circle cx="760" cy="218.74" r="4.5" fill="var(--focus)" stroke="var(--paper)" stroke-width="2"/>
+      <circle cx="760" cy="162.69" r="4.5" fill="var(--save)" stroke="var(--paper)" stroke-width="2"/>
+      <circle cx="760" cy="43.16" r="4.5" fill="var(--cost)" stroke="var(--paper)" stroke-width="2"/>
+      <text class="val" x="752" y="234.0" text-anchor="end" style="fill:var(--focus-ink)">&minus;$23k</text>
+      <text class="val" x="752" y="157.7" text-anchor="end" style="fill:var(--save-ink)">$103k</text>
+      <text class="val" x="752" y="38.2" text-anchor="end" style="fill:var(--cost-ink)">$371k</text>
 
       <line class="axisline" x1="70" y1="330" x2="760" y2="330"/>
       <text class="ax" x="70" y="348">start</text>
@@ -756,12 +749,12 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
     </svg>
     <div class="tip" id="cftip"></div>
     </div>
-    <figcaption>Cumulative net cash position, all three scenarios. The shaded band on the zero line is the break-even window, months&nbsp;20 to&nbsp;29. Savings are ramped: none in the first quarter, a quarter of run-rate by month&nbsp;6, sixty per cent by month&nbsp;9, full from month&nbsp;10. Hover the chart for quarterly figures.</figcaption>
+    <figcaption>Cumulative net cash position, all three scenarios. The shaded band on the zero line is the break-even window, months&nbsp;27 to&nbsp;44. The conservative case is still $23,000 down at year five. Savings are ramped: none in the first quarter, a quarter of run-rate by month&nbsp;6, sixty per cent by month&nbsp;9, full from month&nbsp;10. Hover the chart for quarterly figures.</figcaption>
   </figure>
 
   <div class="callout">
     <span class="label">The one thing that changes this materially</span>
-    <p>If the Databricks commitment renews inside the next twelve months, time the cutover to the renewal date and the payback period collapses &mdash; you stop paying the old platform on the day you would otherwise have re-signed for it, rather than running out an unusable commitment. <strong>Do not start this mid-commit.</strong> That single scheduling decision is worth more than any technical choice in this deck.</p>
+    <p>Stripped of headcount, the migration programme is larger than a single year of savings &mdash; so <strong>timing is no longer an optimisation, it is the deal.</strong> If the Databricks commitment renews inside the next twelve months, cut over at the renewal date: you stop paying the old platform on the day you would otherwise have re-signed, and most of the $48,000 parallel run disappears with it. Start this mid-commit and you are funding two platforms to reach a break-even four years out.</p>
   </div>
 </section>
 
@@ -817,8 +810,8 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
   </div>
   <div class="risk">
     <span class="n">05</span>
-    <div><h3>The savings are engineering-heavy, and people costs are the softest number here</h3>
-      <p>Half the modelled saving is 0.35 of a full-time platform engineer. That is only a saving if the role is genuinely reduced or redeployed &mdash; otherwise it is a capacity gain, which is valuable but is not cash. <strong>Be straight with the CFO about this.</strong> The hard-cash saving is $75,204 a year on the base case; the rest is capacity released.</p></div>
+    <div><h3>On platform costs alone, the migration cost dominates</h3>
+      <p>$233,000 of one-time programme against $47,000&ndash;$135,000 a year of saving. On the conservative scenario it never repays inside five years, and on the base case it takes until month&nbsp;44. <strong>This is not a quick win and should not be sold as one.</strong> Two things change it decisively: landing in the best case, where existing F64 headroom absorbs production and no capacity uplift is needed, and timing the cutover to the Databricks renewal. Gate&nbsp;1 resolves the first for $58,000; the second is a diary decision.</p></div>
   </div>
 </section>
 
@@ -834,23 +827,23 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
   <div class="deflist">
     <div><span class="k">Weeks 1&ndash;2</span><span class="v">Mirror Unity Catalog into OneLake. Map every Unity Catalog grant to a OneLake data access role. Audit Spark runtime and DLT dependencies.</span></div>
     <div><span class="k">Weeks 3&ndash;5</span><span class="v">Port one complete ESG domain &mdash; metered Scope&nbsp;2 plus Concur travel &mdash; to Fabric Spark and Direct Lake. Run it nightly beside the Databricks version.</span></div>
-    <div><span class="k">Week 6</span><span class="v">Gate&nbsp;1. Measured capacity-unit draw, reconciled tCO&#8322;e output, a runtime-parity finding, and a re-run of this cost model on real telemetry rather than assumptions.</span></div>
+    <div><span class="k">Week 6</span><span class="v">Gate&nbsp;1. Measured capacity-unit draw, reconciled tCO&#8322;e output, a runtime-parity finding, and a re-run of this cost model on real telemetry rather than assumptions. The gap between the best and base cases is $268,000 of five-year value &mdash; that is what these six weeks decide.</span></div>
   </div>
 
   <div class="grid3">
     <div class="panel raised"><span class="label">Phase one</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem">$58,000</span><span class="rowsub">6 weeks, 1.5 FTE plus partner. Reversible.</span></p></div>
     <div class="panel raised"><span class="label">Full programme</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem">$233,000</span><span class="rowsub">40 weeks including 14 weeks of parallel run.</span></p></div>
-    <div class="panel raised"><span class="label">Five-year net</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--save-ink)">+$315k&ndash;$709k</span><span class="rowsub">Conservative to best case, after all programme costs.</span></p></div>
+    <div class="panel raised"><span class="label">Five-year net</span><p style="margin-top:10px"><span class="fig" style="font-size:1.7rem;color:var(--save-ink)">&minus;$23k&ndash;+$371k</span><span class="rowsub">Conservative to best case, after all programme costs.</span></p></div>
   </div>
 
   <div class="callout good">
     <span class="label">The sentence to take to the board</span>
-    <p>The business is renting a second analytics platform to serve dashboards, on a tenant where it has already bought and committed to a platform that serves dashboards, and that second platform is two-thirds idle. That is not a technology argument. It is an invoice.</p>
+    <p>The business is renting a second analytics platform to serve dashboards, on a tenant where it has already bought and committed to a platform that serves dashboards, and that second platform is two-thirds idle. On platform costs alone that is worth $47,000 to $135,000 a year &mdash; enough to be worth doing, not enough to be worth rushing. Do it at the renewal date, and spend $58,000 first to find out which end of that range you are in.</p>
   </div>
 </section>
 
 <footer class="wrap">
-  <p><strong>Model assumptions.</strong> Azure Databricks Premium tier, US East, list pricing: Jobs Compute $0.30/DBU, All-Purpose $0.55/DBU, SQL Pro $0.55/DBU, SQL Serverless $0.70/DBU, plus underlying Azure VM cost for classic compute. Fabric F64 reserved at approximately $5,003/month against $8,410/month pay-as-you-go; F-SKU pay-as-you-go billed per second with a one-minute minimum, and pausable. Platform engineering loaded at $165,000/FTE. Estate sized at 1.8&nbsp;TB, ~400 tables, ~350 report consumers. Regional pricing, tier, and committed-use discounts all move these figures &mdash; the sensitivity on slide 08 is there for that reason. Replace every number here with Gate&nbsp;1 telemetry before anyone signs anything.</p>
+  <p><strong>Model assumptions.</strong> Azure Databricks Premium tier, US East, list pricing: Jobs Compute $0.30/DBU, All-Purpose $0.55/DBU, SQL Pro $0.55/DBU, SQL Serverless $0.70/DBU, plus underlying Azure VM cost for classic compute. Fabric F64 reserved at approximately $5,003/month against $8,410/month pay-as-you-go; F-SKU pay-as-you-go billed per second with a one-minute minimum, and pausable. Estate sized at 1.8&nbsp;TB, ~400 tables, ~350 report consumers. <strong>This comparison is platform cost only</strong> &mdash; no internal headcount, vendor support or solution-architect time on either side. The one-time migration programme is retained because it is a real cash outlay, not a run-rate line. Regional pricing, tier, and committed-use discounts all move these figures &mdash; the sensitivity on slide 08 is there for that reason. Replace every number here with Gate&nbsp;1 telemetry before anyone signs anything.</p>
   <p class="srcs">
     <a href="https://learn.microsoft.com/fabric/enterprise/licenses">Fabric licences &amp; capacity</a>
     <a href="https://learn.microsoft.com/fabric/mirroring/overview#cost-of-mirroring">Cost of mirroring</a>
@@ -882,16 +875,16 @@ footer .srcs{margin-top:12px; display:flex; flex-wrap:wrap; gap:6px 18px}
       cross= document.getElementById('cfcross'),
       dots = [document.getElementById('cfd1'), document.getElementById('cfd2'), document.getElementById('cfd3')];
 
-  var cons = [0,-70.0,-147.33,-206.91,-176.21,-145.51,-114.81,-84.11,-53.41,-22.71,7.99,38.69,69.39,100.09,130.79,161.49,192.19,222.89,253.59,284.29,314.99];
-  var base = [0,-70.0,-145.57,-200.93,-163.19,-125.45,-87.71,-49.97,-12.23,25.51,63.25,100.99,138.73,176.47,214.21,251.95,289.69,327.43,365.17,402.91,440.65];
-  var best = [0,-70.0,-141.81,-188.16,-135.41,-82.66,-29.91,22.84,75.59,128.34,181.09,233.84,286.59,339.34,392.09,444.84,497.59,550.34,603.09,655.84,708.59];
+  var cons = [0,-70.0,-152.06,-223.00,-211.24,-199.48,-187.72,-175.96,-164.19,-152.43,-140.67,-128.91,-117.15,-105.38,-93.62,-81.86,-70.10,-58.34,-46.57,-34.81,-23.05];
+  var base = [0,-70.0,-150.30,-217.02,-198.22,-179.42,-160.62,-141.82,-123.01,-104.21,-85.41,-66.61,-47.81,-29.01,-10.21,8.59,27.39,46.19,64.99,83.80,102.60];
+  var best = [0,-70.0,-146.55,-204.26,-170.45,-136.64,-102.83,-69.02,-35.21,-1.40,32.41,66.22,100.03,133.84,167.65,201.46,235.27,269.08,302.89,336.70,370.51];
   var series = [
     {v:cons, name:'Conservative', css:'var(--focus)'},
     {v:base, name:'Base case',    css:'var(--save)'},
     {v:best, name:'Best case',    css:'var(--cost)'}
   ];
   var X = function(q){ return 70 + q*34.5; },
-      Y = function(v){ return 247.5 - v*0.29; };
+      Y = function(v){ return 208.46 - v*0.44615; };
 
   function money(k){
     var s = (k < 0 ? '−' : '+') + '$' + Math.abs(Math.round(k*1000)).toLocaleString('en-US');
